@@ -13,17 +13,20 @@ Route::group(['middleware' => ['api']], function () {
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])
                 ->middleware('guest')
                 ->name('login');
-});
 
-Route::post('/register', [RegisteredUserController::class, 'store'])
+    Route::post('/register', [RegisteredUserController::class, 'store'])
                 ->middleware('guest')
                 ->name('register');
-
-
-
-Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+    Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
                 ->middleware('guest')
                 ->name('password.email');
+
+});
+
+
+
+
+
 
 Route::post('/reset-password', [NewPasswordController::class, 'store'])
                 ->middleware('guest')

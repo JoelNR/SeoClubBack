@@ -51,6 +51,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return response()->noContent();
+        $message = 'All right';
+        $response = [
+            'data' => [
+                'success' => true,
+                'message' => $message,
+            ],
+        ];
+        return response()->json($response, 200);
     }
 }

@@ -31,6 +31,8 @@ Route::group(['middleware' => ['api']], function () {
                 ->middleware('auth.session');
     Route::get('/news', [NewsController::class, 'index'])
                 ->name('profile.index');
+    Route::get('/news/{news}', [NewsController::class, 'show'])
+                ->name('profile.show');
 });
 
 Route::middleware('auth:sanctum')->group(function () {

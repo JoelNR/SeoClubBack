@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\ProfilesController;
+use App\Http\Controllers\NewsController;
 
 Route::group(['middleware' => ['api']], function () {
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])
@@ -23,13 +24,16 @@ Route::group(['middleware' => ['api']], function () {
     Route::get('/profile/{user}', [ProfilesController::class, 'show'])
                 ->name('profile.show');
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-            ->middleware('auth.session')
-            ->name('logout');
+                ->middleware('auth.session')
+                ->name('logout');    
+    Route::put('/profile/update/{user}', [ProfilesController::class, 'update'])
+                ->name('profile.update')
+                ->middleware('auth.session');
+    Route::get('/news', [NewsController::class, 'index'])
+                ->name('profile.index');
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::put('/profile/self/edit', [ProfilesController::class, 'show'])
-                ->name('profile.edit');
 
 });
 

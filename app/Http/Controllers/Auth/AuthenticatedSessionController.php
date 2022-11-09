@@ -10,6 +10,7 @@ use App\Models\User;
 
 class AuthenticatedSessionController extends Controller
 {
+
     /**
      * Handle an incoming authentication request.
      *
@@ -23,6 +24,9 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = User::where('email', $request->email)->first();
+        
+        Auth::login($user);
+
         $token = $user->createToken('seo-token', ['login'])->plainTextToken;
         $message = 'All right';
         $response = [

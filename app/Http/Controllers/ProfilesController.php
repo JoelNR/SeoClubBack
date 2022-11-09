@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class ProfilesController extends Controller
 {
@@ -83,23 +84,37 @@ class ProfilesController extends Controller
             'first_name'=> 'required',
             'last_name'=> 'required',
             'category'=> '',
+            'image' => 'image',
         ]);
 
-        $profile = Profile::select('user_id','first_name', 'last_name', 'category')        
-        ->where('user_id', $user->id)
-        ->get();
+        // if($data['image'] != null){
+        //     $imagePath = request('image')->store('uploads','public');
+
+        //     $image = Image::make(public_path("storage/{$imagePath}"))->fit(300,300);
+        //     $image->save();            
+        // }
+
+
+        $profile = $user->profile;
 
         $profile->first_name = $data['first_name'];
         $profile->last_name = $data['last_name'];
         $profile->category = $data['category'];
+
+        // if($data['image'] != null){
+        //     $profile->image = $imagePath;
+        // }
+        
         $profile->save();
 
         $data['email'] = request('email');
         $data['telephone'] = request('telephone');
 
-        session()->user()->update(
-            $data
-        );
+        $user->first_name = $data['first_name'];
+        $user->last_name = $data['last_name'];
+        $user->email = $data['email'];
+        $user->telephone = $data['telephone'];
+        $user->save();
 
         $message = 'All right';
         $response = [

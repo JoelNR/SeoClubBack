@@ -9,7 +9,7 @@ class NewsController extends Controller
 {
     public function index(Request $request)
     {
-        $news = News::all();
+        $news = News::orderBy('date','desc')->get();
         $message = 'All right';
         $response = [
             'data' => [

@@ -90,7 +90,7 @@ class ProfilesController extends Controller
         // if($data['image'] != null){
         //     $imagePath = request('image')->store('uploads','public');
 
-        //     $image = Image::make(public_path("storage/{$imagePath}"))->fit(300,300);
+        //     $image = Image::make(public_path("storage/{$imagePath}"))->fit(450,450);
         //     $image->save();            
         // }
 
@@ -102,7 +102,7 @@ class ProfilesController extends Controller
         $profile->category = $data['category'];
 
         // if($data['image'] != null){
-        //     $profile->image = $imagePath;
+        //     $profile->image = 'http://127.0.0.1:8000/storage/' + $imagePath;
         // }
         
         $profile->save();

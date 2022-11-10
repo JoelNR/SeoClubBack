@@ -53,7 +53,7 @@ class ProfilesController extends Controller
     public function show(User $user)
     {
 
-        $profile = Profile::select('user_id','first_name', 'last_name', 'category')        
+        $profile = Profile::select('user_id','first_name', 'last_name', 'category', 'image')        
         ->where('user_id', $user->id)
         ->get();
         $message = 'All right';
@@ -84,15 +84,15 @@ class ProfilesController extends Controller
             'first_name'=> 'required',
             'last_name'=> 'required',
             'category'=> '',
-            'image' => 'image',
+            'image' => '',
         ]);
 
-        // if($data['image'] != null){
-        //     $imagePath = request('image')->store('uploads','public');
+        if($data['image'] != null){
+            $imagePath = request('image')->store('uploads','public');
 
-        //     $image = Image::make(public_path("storage/{$imagePath}"))->fit(450,450);
-        //     $image->save();            
-        // }
+            $image = Image::make(public_path("storage/{$imagePath}"))->fit(450,450);
+            $image->save();            
+        }
 
 
         $profile = $user->profile;
@@ -101,9 +101,9 @@ class ProfilesController extends Controller
         $profile->last_name = $data['last_name'];
         $profile->category = $data['category'];
 
-        // if($data['image'] != null){
-        //     $profile->image = 'http://127.0.0.1:8000/storage/' + $imagePath;
-        // }
+        if($data['image'] != null){
+            $profile->image = 'http://127.0.0.1:8000/storage/' + $imagePath;
+        }
         
         $profile->save();
 

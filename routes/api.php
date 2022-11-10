@@ -29,6 +29,9 @@ Route::group(['middleware' => ['api']], function () {
     Route::put('/profile/update/{user}', [ProfilesController::class, 'update'])
                 ->name('profile.update')
                 ->middleware('auth.session');
+    Route::post('/profile/photo/{user}', [ProfilesController::class, 'updatePhoto'])
+                ->name('profile.updatePhoto')
+                ->middleware('auth.session');
     Route::get('/news', [NewsController::class, 'index'])
                 ->name('profile.index');
     Route::get('/news/{news}', [NewsController::class, 'show'])

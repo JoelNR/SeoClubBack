@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
 
 class ProfilesController extends Controller
@@ -70,6 +71,32 @@ class ProfilesController extends Controller
         return response()->json($response, 200);
     }
 
+    public function updatePhoto(Request $request, User $user){
+        $data = request()->validate([
+            'image' => 'image'
+        ]);
+
+        // $imagePath = request('image')->store('uploads','public');
+
+        // $image = Image::make(public_path("http://127.0.0.1:8000/storage/{$imagePath}"))->fit(450,450);
+        // $image->save();  
+
+        $imagePath = $request->file('image')->hashName();
+        Storage::disk('public')->put($imagePath, file_get_contents($request->file('image')));
+        $profile = $user->profile;
+        $profile->image = 'http://127.0.0.1:8000/storage/' . $imagePath;
+        $profile->save();
+
+        $message = 'All right';
+        $response = [
+            'data' => [
+                'success' => true,
+                'image' => $profile->image,
+                'message' => $message,
+            ],
+        ];
+        return response()->json($response, 200);
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -84,16 +111,7 @@ class ProfilesController extends Controller
             'first_name'=> 'required',
             'last_name'=> 'required',
             'category'=> '',
-            'image' => '',
         ]);
-
-        if($data['image'] != null){
-            $imagePath = request('image')->store('uploads','public');
-
-            $image = Image::make(public_path("storage/{$imagePath}"))->fit(450,450);
-            $image->save();            
-        }
-
 
         $profile = $user->profile;
 
@@ -101,10 +119,6 @@ class ProfilesController extends Controller
         $profile->last_name = $data['last_name'];
         $profile->category = $data['category'];
 
-        if($data['image'] != null){
-            $profile->image = 'http://127.0.0.1:8000/storage/' + $imagePath;
-        }
-        
         $profile->save();
 
         $data['email'] = request('email');

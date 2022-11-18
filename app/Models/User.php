@@ -48,6 +48,11 @@ class User extends Authenticatable
         return $this -> hasOne(Profile::class);
     }
 
+    public function InitiationDate()
+    {
+        return $this -> hasOne(InitiationDate::class);
+    }
+
     protected static function boot(){
         parent::boot();
 

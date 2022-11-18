@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\InitiationDateController;
+use App\Models\InitiationDate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -11,7 +13,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\ProfilesController;
 use App\Http\Controllers\NewsController;
 
-Route::group(['middleware' => ['api']], function () {
+Route::group(['middleware' => ['api','cors']], function () {
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])
                 ->middleware('guest')
                 ->name('login');
@@ -26,20 +28,24 @@ Route::group(['middleware' => ['api']], function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->middleware('auth.session')
                 ->name('logout');    
-    Route::put('/profile/update/{user}', [ProfilesController::class, 'update'])
-                ->name('profile.update')
-                ->middleware('auth.session');
-    Route::post('/profile/photo/{user}', [ProfilesController::class, 'updatePhoto'])
-                ->name('profile.updatePhoto')
-                ->middleware('auth.session');
     Route::get('/news', [NewsController::class, 'index'])
-                ->name('profile.index');
+                ->name('news.index');
     Route::get('/news/{news}', [NewsController::class, 'show'])
-                ->name('profile.show');
+                ->name('news.show');
+    Route::get('/initiation', [InitiationDateController::class, 'index'])
+                ->name('initiationDate.index');
+    Route::put('/initiation/{initiation}', [InitiationDateController::class, 'update'])
+                ->name('initiationDate.update')
+                ->middleware('auth.session');
 });
 
-Route::middleware('auth:sanctum')->group(function () {
-
+Route::group(['middleware' => ['api','cors', 'auth:sanctum']], function () {
+    Route::put('/profile/update/{user}', [ProfilesController::class, 'update'])
+                ->name('profile.update');
+    Route::post('/profile/photo/{user}', [ProfilesController::class, 'updatePhoto'])
+                ->name('profile.updatePhoto');
+    Route::get('/user', function (Request $request) {
+        return $request->user();});
 });
 
 
@@ -55,7 +61,3 @@ Route::get('/verify-email/{id}/{hash}', [VerifyEmailController::class, '__invoke
 Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
                 ->middleware(['auth', 'throttle:6,1'])
                 ->name('verification.send');
-
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
-});

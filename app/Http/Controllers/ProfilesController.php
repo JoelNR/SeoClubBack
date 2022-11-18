@@ -10,7 +10,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManagerStatic as Image;
 
 class ProfilesController extends Controller
 {
@@ -76,15 +75,11 @@ class ProfilesController extends Controller
             'image' => 'image'
         ]);
 
-        // $imagePath = request('image')->store('uploads','public');
-
-        // $image = Image::make(public_path("http://127.0.0.1:8000/storage/{$imagePath}"))->fit(450,450);
-        // $image->save();  
-
+        
         $imagePath = $request->file('image')->hashName();
         Storage::disk('public')->put($imagePath, file_get_contents($request->file('image')));
         $profile = $user->profile;
-        $profile->image = 'http://127.0.0.1:8000/storage/' . $imagePath;
+        $profile->image = env('APP_URL') . '/storage/' . $imagePath;
         $profile->save();
 
         $message = 'All right';

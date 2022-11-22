@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\InitiationDateController;
 use App\Models\InitiationDate;
 use Illuminate\Http\Request;
@@ -39,14 +40,17 @@ Route::group(['middleware' => ['api','cors']], function () {
     Route::put('/initiation/{initiation}', [InitiationDateController::class, 'update'])
                 ->name('initiationDate.update')
                 ->middleware('auth.session');
+    Route::get('/competition', [CompetitionController::class, 'index'])
+                ->name('competition.index');
+    Route::get('/competition/{competition}', [CompetitionController::class, 'show'])
+                ->name('competition.show');                                
     Route::put('/profile/update/{user}', [ProfilesController::class, 'update'])
                 ->name('profile.update')
                 ->middleware('auth.session');
     Route::post('/profile/photo/{user}', [ProfilesController::class, 'updatePhoto'])
                 ->name('profile.updatePhoto')
                 ->middleware('auth.session');
-
-    });
+});
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/user', function (Request $request) {

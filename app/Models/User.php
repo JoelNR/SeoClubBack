@@ -53,6 +53,11 @@ class User extends Authenticatable
         return $this -> hasOne(InitiationDate::class);
     }
 
+    public function Competition()
+    {
+        return $this -> hasMany(Competition::class);
+    }
+
     protected static function boot(){
         parent::boot();
 

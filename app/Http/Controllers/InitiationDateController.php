@@ -13,7 +13,7 @@ class InitiationDateController extends Controller
 {
     public function index(Request $request)
     {
-        $initationDates = $request->session()->get('user');
+        $initationDates = InitiationDate::orderBy('date','desc')->get();
         $message = 'All right';
         $response = [
             'data' => [

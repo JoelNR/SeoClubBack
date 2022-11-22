@@ -23,6 +23,8 @@ Route::group(['middleware' => ['api','cors']], function () {
     Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
                 ->middleware('guest')
                 ->name('password.email');
+    Route::get('/profiles', [ProfilesController::class, 'index'])
+                ->name('profile.index');                
     Route::get('/profile/{user}', [ProfilesController::class, 'show'])
                 ->name('profile.show');
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
@@ -37,13 +39,16 @@ Route::group(['middleware' => ['api','cors']], function () {
     Route::put('/initiation/{initiation}', [InitiationDateController::class, 'update'])
                 ->name('initiationDate.update')
                 ->middleware('auth.session');
-});
-
-Route::group(['middleware' => ['api','cors', 'auth:sanctum']], function () {
     Route::put('/profile/update/{user}', [ProfilesController::class, 'update'])
-                ->name('profile.update');
+                ->name('profile.update')
+                ->middleware('auth.session');
     Route::post('/profile/photo/{user}', [ProfilesController::class, 'updatePhoto'])
-                ->name('profile.updatePhoto');
+                ->name('profile.updatePhoto')
+                ->middleware('auth.session');
+
+    });
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/user', function (Request $request) {
         return $request->user();});
 });

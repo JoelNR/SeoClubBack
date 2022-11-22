@@ -25,8 +25,10 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = User::where('email', $request->email)->first();
-        Auth::login($user);
+        
         $token = $user->createToken('seo-token')->plainTextToken;
+        
+        $request->session()->put('user', 'aaa');
         $message = 'All right';
         $response = [
             'data' => [
@@ -48,7 +50,6 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): JsonResponse
     {
-        Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 

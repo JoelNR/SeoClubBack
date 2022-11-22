@@ -13,7 +13,7 @@ class InitiationDateController extends Controller
 {
     public function index(Request $request)
     {
-        $initationDates = Auth::guard('api')->user();
+        $initationDates = $request->session()->get('user');
         $message = 'All right';
         $response = [
             'data' => [

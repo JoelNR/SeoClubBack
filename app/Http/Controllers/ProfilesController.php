@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ProfileResource;
 use App\Models\Profile;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ProfilesController extends Controller
@@ -18,9 +16,19 @@ class ProfilesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        $profiles = DB::table('profiles')->where('is_member', 'true')->get();
+        $message = 'All right';
+        $response = [
+            'data' => [
+                'success' => true,
+                'profiles' => $profiles,
+                'message' => $message,
+            ],
+        ];
+
+        return response()->json($response, 200);
     }
 
     /**
@@ -50,7 +58,7 @@ class ProfilesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(User $user): JsonResponse
     {
 
         $profile = Profile::select('user_id','first_name', 'last_name', 'category', 'image')        
@@ -70,7 +78,7 @@ class ProfilesController extends Controller
         return response()->json($response, 200);
     }
 
-    public function updatePhoto(Request $request, User $user){
+    public function updatePhoto(Request $request, User $user): JsonResponse{
         $data = request()->validate([
             'image' => 'image'
         ]);
@@ -99,7 +107,7 @@ class ProfilesController extends Controller
      * @param  \App\Models\Profile  $profile
      * @return \Illuminate\Http\Response
      */
-    public function update(User $user)
+    public function update(User $user): JsonResponse
     {
 
         $data = request()->validate([

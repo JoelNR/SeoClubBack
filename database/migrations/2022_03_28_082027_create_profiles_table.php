@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('first_name');
             $table->string('last_name');
+            $table->boolean('is_member')->nullable();
             $table->text('category')->nullable();
             $table->text('image')->nullable();
             $table->timestamps();

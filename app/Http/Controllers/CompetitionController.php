@@ -29,7 +29,7 @@ class CompetitionController extends Controller
         $response = [
             'data' => [
                 'success' => true,
-                'news' => $competition,
+                'competitions' => $competition,
                 'message' => $message,
             ],
         ];

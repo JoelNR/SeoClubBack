@@ -48,12 +48,12 @@ class User extends Authenticatable
         return $this -> hasOne(Profile::class);
     }
 
-    public function InitiationDate()
+    public function initiation_date()
     {
         return $this -> hasOne(InitiationDate::class);
     }
 
-    public function Competition()
+    public function competition()
     {
         return $this -> hasMany(Competition::class);
     }

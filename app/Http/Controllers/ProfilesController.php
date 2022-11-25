@@ -63,7 +63,7 @@ class ProfilesController extends Controller
 
         $profile = Profile::select('user_id','first_name', 'last_name', 'category', 'image')        
         ->where('user_id', $user->id)
-        ->get();
+        ->first();
         $message = 'All right';
         $response = [
             'data' => [

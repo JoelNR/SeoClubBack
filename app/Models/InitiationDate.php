@@ -16,7 +16,7 @@ class InitiationDate extends Model
         'capacity'
     ];
 
-    public function user(){
-        return $this->hasMany(User::class);
+    public function users(){
+        return $this->belongsToMany(User::class);
     }
 }

@@ -31,5 +31,13 @@ class InitiationDateSeeder extends Seeder
             'date' => '2023-01-23',
             'capacity' => '3'
         ]);
+        InitiationDate::create([
+            'date' => '2023-02-06',
+            'capacity' => '3'
+        ]);
+        InitiationDate::create([
+            'date' => '2023-02-13',
+            'capacity' => '3'
+        ]);
     }
 }

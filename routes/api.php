@@ -37,7 +37,9 @@ Route::group(['middleware' => ['api','cors']], function () {
                 ->name('news.show');
     Route::get('/initiation', [InitiationDateController::class, 'index'])
                 ->name('initiationDate.index');
-    Route::put('/initiation/{initiation}', [InitiationDateController::class, 'update'])
+    Route::get('/initiation/{initiation_dates}', [InitiationDateController::class, 'show'])
+                ->name('initiationDate.show');
+    Route::put('/initiation/{initiation_dates}', [InitiationDateController::class, 'update'])
                 ->name('initiationDate.update')
                 ->middleware('auth.session');
     Route::get('/competition', [CompetitionController::class, 'index'])

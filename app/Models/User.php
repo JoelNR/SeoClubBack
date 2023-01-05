@@ -58,6 +58,26 @@ class User extends Authenticatable
         return $this -> hasMany(Competition::class);
     }
 
+    public function arrow()
+    {
+        return $this -> hasMany(Competition::class);
+    }
+
+    public function set()
+    {
+        return $this -> hasMany(Competition::class);
+    }
+
+    public function round()
+    {
+        return $this -> hasMany(Competition::class);
+    }
+
+    public function score()
+    {
+        return $this -> hasMany(Competition::class);
+    }
+
     protected static function boot(){
         parent::boot();
 

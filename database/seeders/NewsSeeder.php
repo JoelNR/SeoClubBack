@@ -36,5 +36,11 @@ class NewsSeeder extends Seeder
             'date' => '2022-09-10',
             'image' => '/assets/img/flechas.jpeg'
         ]);
+        News::create([
+            'title'=> 'Nuevo arquero a 70 metros' ,
+            'content' => 'El pasado mes, nuestro arquero Alex, realizó la prueba de ascenso para los 70 metros y la completó con éxito, uniendose al grupo de ocho arqueros que dispone el club en este nivel. ¡Felicidades a Alex, a disfrutar esos 70m!',
+            'date' => '2022-12-20',
+            'image' => '/assets/img/ale-nivel.jpeg'
+        ]);
     }
 }

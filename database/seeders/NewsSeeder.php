@@ -37,10 +37,18 @@ class NewsSeeder extends Seeder
             'image' => '/assets/img/flechas.jpeg'
         ]);
         News::create([
-            'title'=> 'Nuevo arquero a 70 metros' ,
-            'content' => 'El pasado mes, nuestro arquero Alex, realizó la prueba de ascenso para los 70 metros y la completó con éxito, uniendose al grupo de ocho arqueros que dispone el club en este nivel. ¡Felicidades a Alex, a disfrutar esos 70m!',
+            'title'=> '¡Nuevo arquero a 70 metros!' ,
+            'content' => 'El pasado mes, nuestro arquero Alexander Fleitas Hernández, realizó la prueba de ascenso para los 70 metros y la completó con éxito, uniendose al grupo de ocho arqueros que dispone el club en este nivel. ¡Felicidades a Alex, a disfrutar esos 70m!',
             'date' => '2022-12-20',
             'image' => '/assets/img/ale-nivel.jpeg'
+        ]);
+        News::create([
+            'title'=> 'Tres medallas de los arqueros del SEO en el Campeonato de Canarias de Sala 2022' ,
+            'content' => 'Este fin de semana, se ha celebrado el campeonato de canarias de sala 2022 en la isla de Fuerteventura. La expedición del SEO, consiguió tres podios en diferentes categorías.
+            Itziar Bravo Ruiz, oro en arco recurvo mixto (U18). Jorge José López Bordón, plata en arco compuesto masculino. Atasara Henríquez Santana, bronce en arco desnudo femenino.
+            Muchas felicidades a todos y también a todos los demás arqueros del club que participaron.',
+            'date' => '2022-12-19',
+            'image' => '/assets/img/cpt-can-sala.jpg'
         ]);
     }
 }

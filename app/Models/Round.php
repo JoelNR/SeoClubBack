@@ -13,13 +13,18 @@ class Round extends Model
 
     protected $fillable = [
         'points',
+        'score_id'
     ];
 
-    public function Score(){
+    public function score(){
         return $this->belongsTo(Score::class);
     }
 
     public function user(){
         return $this->belongsTo(User::class);
     }
+
+    public function sets(){
+        return $this->hasMany(Set::class);
+    }    
 }

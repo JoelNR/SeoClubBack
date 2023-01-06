@@ -12,6 +12,8 @@ class Arrow extends Model
 
     protected $fillable = [
         'points',
+        'set_id',
+        'user_id'
     ];
 
     public function set(){

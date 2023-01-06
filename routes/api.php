@@ -13,6 +13,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\ProfilesController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\SetController;
 
 Route::group(['middleware' => ['api','cors']], function () {
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])
@@ -33,6 +34,8 @@ Route::group(['middleware' => ['api','cors']], function () {
                 ->name('logout');    
     Route::get('/news', [NewsController::class, 'index'])
                 ->name('news.index');
+    Route::get('/firstnews', [NewsController::class, 'first'])
+                ->name('news.first');
     Route::get('/news/{news}', [NewsController::class, 'show'])
                 ->name('news.show');
     Route::get('/initiation', [InitiationDateController::class, 'index'])
@@ -52,6 +55,18 @@ Route::group(['middleware' => ['api','cors']], function () {
     Route::post('/profile/photo/{user}', [ProfilesController::class, 'updatePhoto'])
                 ->name('profile.updatePhoto')
                 ->middleware('auth.session');
+    Route::get('/set', [SetController::class, 'index'])
+                ->name('set.index')
+                ->middleware('auth.session');
+    Route::get('/set/{set}', [SetController::class, 'show'])
+                ->name('set.show')   
+                ->middleware('auth.session');                             
+    Route::put('/set/update/{set}', [SetController::class, 'update'])
+                ->name('profile.update')
+                ->middleware('auth.session');
+    Route::post('/set/create/{user}', [SetController::class, 'store'])
+                ->name('profile.updatePhoto')
+                ->middleware('auth.session');          
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {

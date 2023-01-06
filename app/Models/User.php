@@ -58,24 +58,24 @@ class User extends Authenticatable
         return $this -> hasMany(Competition::class);
     }
 
-    public function arrow()
+    public function arrows()
     {
-        return $this -> hasMany(Competition::class);
+        return $this -> hasMany(Arrow::class);
     }
 
-    public function set()
+    public function sets()
     {
-        return $this -> hasMany(Competition::class);
+        return $this -> hasMany(Set::class);
     }
 
-    public function round()
+    public function rounds()
     {
-        return $this -> hasMany(Competition::class);
+        return $this -> hasMany(Round::class);
     }
 
-    public function score()
+    public function scores()
     {
-        return $this -> hasMany(Competition::class);
+        return $this -> hasMany(Score::class);
     }
 
     protected static function boot(){

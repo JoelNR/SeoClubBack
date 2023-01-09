@@ -51,23 +51,15 @@ class SetController extends Controller
         ]);
 
         $set->points = $data['points'];
-        $arrows = $set->arrows()->get();
-        
-        for ($i = 0; $i < count($arrows); ++$i) {
-            $arrows[$i] = $data['arrows'][$i];
-            $arrows[$i]->update();
-         }
+        $arrows = $set->arrows()->delete();
 
-        // foreach($arrows as $arrow){
-        //     $arrow->delete();
-        // }
-
-        // foreach($data['arrows'] as $arrow){
-        //     $set->arrows()->create([
-        //         'points'=> $arrow,
-        //         'user_id' => $data['user_id']
-        //     ]);
-        // }
+        foreach($data['arrows'] as $arrow){
+            $set->arrows()->create([
+                'points'=> $arrow,
+                'user_id' => $data['user_id'],
+                'set_id' => $set->id
+            ]);
+        }
 
         $set->update();
 

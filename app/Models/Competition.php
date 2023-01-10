@@ -19,7 +19,7 @@ class Competition extends Model
         'modality'
     ];
 
-    public function user(){
-        return $this->hasMany(User::class);
+    public function users(){
+        return $this->belongsToMany(User::class);
     }
 }

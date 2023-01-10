@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Competition;
 use App\Models\User;
+use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -32,7 +33,7 @@ class CompetitionController extends Controller
         $usersCompetition = DB::table('competition_user')->where('competition_id',$competition->id)->get();
         foreach($usersCompetition as $user){
             array_push($usersArray,[
-                'archer' => User::find($user->user_id),
+                'archer' => Profile::find($user->user_id),
                 'category' => $user->category]);
         }
 

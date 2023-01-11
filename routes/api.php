@@ -49,6 +49,9 @@ Route::group(['middleware' => ['api','cors']], function () {
                 ->name('competition.index');
     Route::get('/competition/{competition}', [CompetitionController::class, 'show'])
                 ->name('competition.show');
+    Route::get('/target/{competition}', [CompetitionController::class, 'targetArchers'])
+                ->name('competition.targetArchers')
+                ->middleware('auth.session');
     Route::put('/competition/{competition}', [CompetitionController::class, 'update'])
                 ->name('competition.update')
                 ->middleware('auth.session');                                   

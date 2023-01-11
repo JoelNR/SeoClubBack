@@ -17,6 +17,9 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('category');
+            $table->integer('target_number')->nullable();
+            $table->integer('distance');
+            $table->string('target_letter')->nullable();
             $table->foreignId('competition_id')->references('id')->on('competitions');
             $table->foreignId('user_id')->references('id')->on('users');
         });

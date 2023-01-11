@@ -45,8 +45,10 @@ class NewsSeeder extends Seeder
         News::create([
             'title'=> 'Tres medallas de los arqueros del SEO en el Campeonato de Canarias de Sala 2022' ,
             'content' => 'Este fin de semana, se ha celebrado el campeonato de canarias de sala 2022 en la isla de Fuerteventura. La expedición del SEO, consiguió tres podios en diferentes categorías.
-            Itziar Bravo Ruiz, oro en arco recurvo mixto (U18). Jorge José López Bordón, plata en arco compuesto masculino. Atasara Henríquez Santana, bronce en arco desnudo femenino.
-            Muchas felicidades a todos y también a todos los demás arqueros del club que participaron.',
+- Itziar Bravo Ruiz, oro en arco recurvo mixto (U18).
+- Jorge José López Bordón, plata en arco compuesto masculino.
+- Atasara Henríquez Santana, bronce en arco desnudo femenino.
+Muchas felicidades a todos y también a todos los demás arqueros del club que participaron.',
             'date' => '2022-12-19',
             'image' => '/assets/img/cpt-can-sala.jpg'
         ]);

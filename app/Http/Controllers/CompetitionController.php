@@ -34,7 +34,10 @@ class CompetitionController extends Controller
         foreach($usersCompetition as $user){
             array_push($usersArray,[
                 'archer' => Profile::find($user->user_id),
-                'category' => $user->category]);
+                'category' => $user->category,
+                'distance' => $user->distance,
+                'target_number' => $user->target_number,
+                'target_letter' => $user->target_letter]);
         }
 
         $message = 'All right';
@@ -54,11 +57,12 @@ class CompetitionController extends Controller
     {
         $data = request()->validate([
             'user_id' => 'required',
-            'category' => 'required'
+            'category' => 'required',
+            'distance' => 'required'
         ]);
 
         $user = User::find($data['user_id']);
-        $competition->users()->attach($user, ['category' => $data['category']]);
+        $competition->users()->attach($user, ['category' => $data['category'], 'distance' => $data['distance']]);
 
         $competition->update();
 
@@ -66,6 +70,38 @@ class CompetitionController extends Controller
         $response = [
             'data' => [
                 'success' => true,
+                'message' => $message,
+            ],
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    public function targetArchers(Competition $competition, Request $request)
+    {
+        $data = request()->validate([
+            'user_id' => 'required',
+        ]);
+
+        $usersArray = array();
+        $user = User::find($data['user_id']);
+        $userTarget = DB::table('competition_user')->where('competition_id',$competition->id)->where('user_id',$data['user_id'])->first();
+        $archers = DB::table('competition_user')->where('competition_id',$competition->id)->where('target_number',$userTarget->target_number)->get(); 
+
+        foreach($archers as $archer){
+            array_push($usersArray,[
+                'archer' => Profile::find($archer->user_id),
+                'category' => $archer->category,
+                'distance' => $archer->distance,
+                'target_number' => $archer->target_number,
+                'target_letter' => $archer->target_letter]);
+        }
+        $message = 'All right';
+        $response = [
+            'data' => [
+                'success' => true,
+                'competitions' => $competition,
+                'archers' => $usersArray,
                 'message' => $message,
             ],
         ];

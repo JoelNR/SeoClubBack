@@ -14,6 +14,8 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\ProfilesController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\SetController;
+use App\Http\Controllers\RoundController;
+use App\Http\Controllers\ScoreController;
 
 Route::group(['middleware' => ['api','cors']], function () {
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])
@@ -68,11 +70,17 @@ Route::group(['middleware' => ['api','cors']], function () {
                 ->name('set.show')   
                 ->middleware('auth.session');                             
     Route::put('/set/update/{set}', [SetController::class, 'update'])
-                ->name('profile.update')
+                ->name('set.update')
                 ->middleware('auth.session');
     Route::post('/set/create/{user}', [SetController::class, 'store'])
-                ->name('profile.updatePhoto')
-                ->middleware('auth.session');          
+                ->name('set.store')
+                ->middleware('auth.session');
+    Route::post('/score/create/{user}', [ScoreController::class, 'store'])
+                ->name('score.store')
+                ->middleware('auth.session');
+    Route::post('/round/create/{user}', [RoundController::class, 'store'])
+                ->name('round.store')
+                ->middleware('auth.session');                    
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {

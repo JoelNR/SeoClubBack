@@ -13,6 +13,7 @@ class Score extends Model
 
     protected $fillable = [
         'points',
+        'competition_id'
     ];
 
     public function competition(){

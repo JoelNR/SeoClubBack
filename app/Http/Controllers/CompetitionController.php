@@ -37,7 +37,8 @@ class CompetitionController extends Controller
                 'category' => $user->category,
                 'distance' => $user->distance,
                 'target_number' => $user->target_number,
-                'target_letter' => $user->target_letter]);
+                'target_letter' => $user->target_letter,
+                'points' => $user->points]);
         }
 
         $message = 'All right';
@@ -62,7 +63,7 @@ class CompetitionController extends Controller
         ]);
 
         $user = User::find($data['user_id']);
-        $competition->users()->attach($user, ['category' => $data['category'], 'distance' => $data['distance']]);
+        $competition->users()->attach($user, ['category' => $data['category'], 'distance' => $data['distance'],'points' => 0]);
 
         $competition->update();
 
@@ -70,6 +71,30 @@ class CompetitionController extends Controller
         $response = [
             'data' => [
                 'success' => true,
+                'message' => $message,
+            ],
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    public function updatePoints(Competition $competition, Request $request)
+    {
+        $data = request()->validate([
+            'user_id' => 'required',
+            'points' => 'required',
+        ]);
+
+        $relation = DB::table('competition_user')->where('competition_id',$competition->id)->where('user_id', $data['user_id'])->first();
+        $relation->points = $data['points'];
+
+        $relation->update();
+
+        $message = 'All right';
+        $response = [
+            'data' => [
+                'success' => true,
+                'archer' => $relation,
                 'message' => $message,
             ],
         ];
@@ -94,7 +119,8 @@ class CompetitionController extends Controller
                 'category' => $archer->category,
                 'distance' => $archer->distance,
                 'target_number' => $archer->target_number,
-                'target_letter' => $archer->target_letter]);
+                'target_letter' => $archer->target_letter,
+                'points' => $archer->points]);
         }
         $message = 'All right';
         $response = [

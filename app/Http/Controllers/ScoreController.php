@@ -34,4 +34,25 @@ class ScoreController extends Controller
 
         return response()->json($response, 200);
     }
+
+    public function update(Score $score, Request $request)
+    {
+
+        $data = request()->validate([
+            'points' => 'required',
+        ]);
+        $score->points = $data['points'];
+        $score->update();
+
+        $message = 'All right';
+        $response = [
+            'data' => [
+                'success' => true,
+                'score' => $score,
+                'message' => $message,
+            ],
+        ];
+
+        return response()->json($response, 200);
+    }
 }

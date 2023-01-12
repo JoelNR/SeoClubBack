@@ -38,6 +38,27 @@ class RoundController extends Controller
         return response()->json($response, 200);
     }
 
+    public function update(Round $round, Request $request)
+    {
+
+        $data = request()->validate([
+            'points' => 'required',
+        ]);
+        $round->points = $data['points'];
+        $round->update();
+
+        $message = 'All right';
+        $response = [
+            'data' => [
+                'success' => true,
+                'round' => $round,
+                'message' => $message,
+            ],
+        ];
+
+        return response()->json($response, 200);
+    }
+
 
     public function store(User $user, Request $request)
     {
@@ -45,15 +66,17 @@ class RoundController extends Controller
             'score_id' => 'required',
         ]);
 
+        
         $roundsData = $user->rounds()->where('score_id',$data['score_id'])->get();
 
         if(count($roundsData) < 2){
-            $roundsData = $user->rounds()->create([
+            $roundsData = array();
+            array_push($roundsData,$user->rounds()->create([
                 'points'=> 0, 
-                'score_id' => $data['score_id'],
+                'score_id' => $data['score_id']]));
+            array_push($roundsData,$user->rounds()->create([
                 'points'=> 0, 
-                'score_id' => $data['score_id']
-            ]);
+                'score_id' => $data['score_id']]));
         } 
 
         $message = 'All right';

@@ -56,7 +56,10 @@ Route::group(['middleware' => ['api','cors']], function () {
                 ->middleware('auth.session');
     Route::put('/competition/{competition}', [CompetitionController::class, 'update'])
                 ->name('competition.update')
-                ->middleware('auth.session');                                   
+                ->middleware('auth.session'); 
+    Route::put('/competition/points/{competition}', [CompetitionController::class, 'updatePoints'])
+                ->name('competition.updatePoints')
+                ->middleware('auth.session');                                     
     Route::put('/profile/update/{user}', [ProfilesController::class, 'update'])
                 ->name('profile.update')
                 ->middleware('auth.session');
@@ -83,7 +86,13 @@ Route::group(['middleware' => ['api','cors']], function () {
                 ->middleware('auth.session'); 
     Route::get('/round/{round}', [RoundController::class, 'showSet'])
                 ->name('round.showSet')
-                ->middleware('auth.session');                     
+                ->middleware('auth.session');
+    Route::put('/round/{round}', [RoundController::class, 'update'])
+                ->name('round.update')
+                ->middleware('auth.session'); 
+    Route::put('/score/{score}', [ScoreController::class, 'update'])
+                ->name('score.update')
+                ->middleware('auth.session');                                     
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {

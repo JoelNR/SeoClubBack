@@ -80,7 +80,10 @@ Route::group(['middleware' => ['api','cors']], function () {
                 ->middleware('auth.session');
     Route::post('/round/create/{user}', [RoundController::class, 'store'])
                 ->name('round.store')
-                ->middleware('auth.session');                    
+                ->middleware('auth.session'); 
+    Route::get('/round/{round}', [RoundController::class, 'showSet'])
+                ->name('round.showSet')
+                ->middleware('auth.session');                     
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {

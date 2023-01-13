@@ -85,10 +85,7 @@ class CompetitionController extends Controller
             'points' => 'required',
         ]);
 
-        $relation = DB::table('competition_user')->where('competition_id',$competition->id)->where('user_id', $data['user_id'])->first();
-        $relation->points = $data['points'];
-
-        $relation->update();
+        $relation = DB::table('competition_user')->where('competition_id',$competition->id)->where('user_id', $data['user_id'])->update(['points' => $data['points'] ]);
 
         $message = 'All right';
         $response = [

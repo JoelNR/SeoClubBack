@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Score;
+use App\Models\Round;
 
 class ScoreController extends Controller
 {
@@ -20,14 +21,22 @@ class ScoreController extends Controller
             $scoreData = $user->scores()->create([
                 'points'=> 0, 
                 'competition_id' =>$data['competition_id']
-            ]);
-        } 
+            ]);            
+
+            $user->rounds()->create([
+                'points'=> 0, 
+                'score_id' => $scoreData->id]);
+            $user->rounds()->create([
+                'points'=> 0, 
+                'score_id' => $scoreData->id]);
+        }
 
         $message = 'All right';
         $response = [
             'data' => [
                 'success' => true,
                 'score' => $scoreData,
+                'rounds' => $scoreData->rounds()->get(),
                 'message' => $message,
             ],
         ];

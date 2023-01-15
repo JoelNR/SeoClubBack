@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Set;
+use App\Models\Round;
+use App\Models\Competition;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class SetController extends Controller
 {
@@ -49,6 +53,11 @@ class SetController extends Controller
             'points' => 'required',
             'user_id' => 'required',
         ]);
+        $round = $set->round()->first();
+        $score = $round->score()->first();
+
+        $round->points -= $set->points;
+        $score->points -= $set->points;
 
         $set->points = $data['points'];
         $arrows = $set->arrows()->delete();
@@ -63,11 +72,25 @@ class SetController extends Controller
 
         $set->update();
 
+        $round->points += $data['points'];
+        $round->update();
+        
+
+        $score->points += $data['points'];
+        $score->update();
+
+        $competition = $score->competition()->first();
+
+        $relation = DB::table('competition_user')->where('competition_id',$competition->id)->where('user_id', $data['user_id'])->update(['points' => $score->points ]);
+
         $message = 'All right';
         $response = [
             'data' => [
                 'success' => true,
                 'set' => $set,
+                'arrows' => $set->arrows()->get(),
+                'round' => $round,
+                'score' => $score,
                 'message' => $message,
             ],
         ];
@@ -96,12 +119,26 @@ class SetController extends Controller
             ]);
         }
 
+        $round = $set->round()->first();
+        $round->points = $round->points + $data['points'];
+        $round->update();
+        
+        $score = $round->score()->first();
+        $score->points = $score->points + $data['points'];
+        $score->update();
+
+        $competition = $score->competition()->first();
+
+        $relation = DB::table('competition_user')->where('competition_id',$competition->id)->where('user_id', $user->id)->update(['points' => $score->points ]);
+
         $message = 'All right';
         $response = [
             'data' => [
                 'success' => true,
                 'set' => $set,
                 'arrows' => $set->arrows()->get(),
+                'round' => $round,
+                'score' => $score,
                 'message' => $message,
             ],
         ];

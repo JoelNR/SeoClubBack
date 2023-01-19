@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Profile;
+use App\Models\Competition;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -152,5 +153,42 @@ class ProfilesController extends Controller
     public function destroy(Profile $profile)
     {
         //
+    }
+
+    public function getProfileCompetition(Profile $profile)
+    {
+        $competitionArray = array();
+        $usersCompetition = DB::table('competition_user')->where('user_id',$profile->user_id)->paginate(6);
+        foreach($usersCompetition as $competition){
+            $place = 1;
+            $competitionPosition = DB::table('competition_user')->where('competition_id',$competition->competition_id)->get();
+            foreach ($competitionPosition as $positionCheck){
+                if($positionCheck->category == $competition->category){
+                    if ($positionCheck->distance == $competition->distance){
+                        if($positionCheck->points > $competition->points){
+                            $place++;
+                        }
+                    }
+                }
+            }
+
+            array_push($competitionArray,[
+                'competition' => Competition::find($competition->competition_id),
+                'category' => $competition->category,
+                'distance' => $competition->distance,
+                'place' => $place,
+                'points' => $competition->points]);
+        }
+
+        $message = 'All right';
+        $response = [
+            'data' => [
+                'success' => true,
+                'competitions' => $competitionArray,
+                'message' => $message,
+            ],
+        ];
+
+        return response()->json($response, 200);
     }
 }

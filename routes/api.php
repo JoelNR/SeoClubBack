@@ -31,6 +31,8 @@ Route::group(['middleware' => ['api','cors']], function () {
                 ->name('profile.index');                
     Route::get('/profile/{user}', [ProfilesController::class, 'show'])
                 ->name('profile.show');
+    Route::get('/profile/competition/{profile}', [ProfilesController::class, 'getProfileCompetition'])
+                ->name('profile.getProfileCompetition');
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->middleware('auth.session')
                 ->name('logout');    

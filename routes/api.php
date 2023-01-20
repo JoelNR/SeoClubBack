@@ -16,6 +16,7 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\SetController;
 use App\Http\Controllers\RoundController;
 use App\Http\Controllers\ScoreController;
+use App\Http\Controllers\RecordController;
 
 Route::group(['middleware' => ['api','cors']], function () {
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])
@@ -56,6 +57,10 @@ Route::group(['middleware' => ['api','cors']], function () {
     Route::get('/target/{competition}', [CompetitionController::class, 'targetArchers'])
                 ->name('competition.targetArchers')
                 ->middleware('auth.session');
+    Route::get('/records/{user}', [RecordController::class, 'profileRecords'])
+                ->name('record.profileRecords');
+    Route::get('/records', [RecordController::class, 'clubRecords'])
+                ->name('record.clubRecords');
     Route::put('/competition/{competition}', [CompetitionController::class, 'update'])
                 ->name('competition.update')
                 ->middleware('auth.session'); 

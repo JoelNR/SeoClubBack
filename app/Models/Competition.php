@@ -26,4 +26,8 @@ class Competition extends Model
     public function scores(){
         return $this->hasMany(User::class);
     }
+
+    public function records(){
+        return $this->hasMany(Record::class);
+    }
 }

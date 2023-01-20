@@ -13,17 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('profiles', function (Blueprint $table) {
+        Schema::create('records', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->boolean('is_member')->nullable();
-            $table->string('category')->nullable();
-            $table->text('image')->nullable();
             $table->timestamps();
-
+            $table->integer('points');
+            $table->integer('distance');
+            $table->string('category');
+            $table->string('modality');
+            $table->unsignedBigInteger('user_id');
             $table->index('user_id');
+            $table->unsignedBigInteger('competition_id');
+            $table->index('competition_id');
         });
     }
 
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('profiles');
+        Schema::dropIfExists('records');
     }
 };

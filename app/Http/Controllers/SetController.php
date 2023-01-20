@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Set;
 use App\Models\Round;
+use App\Models\Record;
 use App\Models\Competition;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -127,9 +128,30 @@ class SetController extends Controller
         $score->points = $score->points + $data['points'];
         $score->update();
 
+        
+
         $competition = $score->competition()->first();
 
-        $relation = DB::table('competition_user')->where('competition_id',$competition->id)->where('user_id', $user->id)->update(['points' => $score->points ]);
+        $relation = DB::table('competition_user')->where('competition_id',$competition->id)->where('user_id', $user->id)->first();
+        DB::table('competition_user')->where('competition_id',$competition->id)->where('user_id', $user->id)->update(['points' => $score->points ]);
+
+        $record = $user->records()->where('category',$relation->category)->where('distance',$relation->distance)->where('modality',$competition->modality)->first();
+        
+        if($record == null){
+            Record::create([
+                'points'=> $score->points,
+                'user_id' => $user->id,
+                'competition_id' => $competition->id,
+                'category'=> $relation->category,
+                'distance' => $relation->distance,
+                'modality' => $competition->modality
+            ]);
+        } else {
+            if($record->points < $score->points){
+                $record->points = $score->points;
+                $record->update();
+            }
+        }
 
         $message = 'All right';
         $response = [
@@ -139,6 +161,7 @@ class SetController extends Controller
                 'arrows' => $set->arrows()->get(),
                 'round' => $round,
                 'score' => $score,
+                'record'=>$record,
                 'message' => $message,
             ],
         ];

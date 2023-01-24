@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Profile;
 use App\Models\Competition;
 use App\Models\User;
+use App\Models\Arrow;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -185,6 +186,56 @@ class ProfilesController extends Controller
             'data' => [
                 'success' => true,
                 'competitions' => $competitionArray,
+                'message' => $message,
+            ],
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    public function getProfileStats(Profile $profile)
+    {
+        $numberOfPodiums = 0;
+        $usersCompetition = DB::table('competition_user')->where('user_id',$profile->user_id)->get();
+        foreach($usersCompetition as $competition){
+            $place = 1;
+            $competitionPosition = DB::table('competition_user')->where('competition_id',$competition->competition_id)->get();
+            foreach ($competitionPosition as $positionCheck){
+                if($positionCheck->category == $competition->category){
+                    if ($positionCheck->distance == $competition->distance){
+                        if($positionCheck->points > $competition->points){
+                            $place++;
+                        }
+                    }
+                }
+            }
+            if ($place <= 3){
+                $numberOfPodiums++;
+            }
+        }
+        
+        $arrows = Arrow::where('user_id',$profile->user_id)->get();
+        $avarageArrow = 0;
+        foreach ($arrows as $arrow){
+            $avarageArrow += $arrow->points == 'X' ? 10 : ($arrow->points == 'M' ? 0 : $arrow->points);
+        }
+
+        $avarageArrow = $avarageArrow / count($arrows);
+
+        $tens = Arrow::where('user_id',$profile->user_id)->where('points',10)->get();
+        $nines = Arrow::where('user_id',$profile->user_id)->where('points',9)->get();
+        $x = Arrow::where('user_id',$profile->user_id)->where('points','X')->get();
+
+        $message = 'All right';
+        $response = [
+            'data' => [
+                'success' => true,
+                'competitions' => count($usersCompetition),
+                'tens' => count($tens),
+                'nines' => count($nines),
+                'x' => count($x),
+                'avarage' => $avarageArrow,
+                'podiums' => $numberOfPodiums,
                 'message' => $message,
             ],
         ];

@@ -198,19 +198,21 @@ class ProfilesController extends Controller
         $numberOfPodiums = 0;
         $usersCompetition = DB::table('competition_user')->where('user_id',$profile->user_id)->get();
         foreach($usersCompetition as $competition){
-            $place = 1;
-            $competitionPosition = DB::table('competition_user')->where('competition_id',$competition->competition_id)->get();
-            foreach ($competitionPosition as $positionCheck){
-                if($positionCheck->category == $competition->category){
-                    if ($positionCheck->distance == $competition->distance){
-                        if($positionCheck->points > $competition->points){
-                            $place++;
+            if ($competition->points != 0){
+                $place = 1;
+                $competitionPosition = DB::table('competition_user')->where('competition_id',$competition->competition_id)->get();
+                foreach ($competitionPosition as $positionCheck){
+                    if($positionCheck->category == $competition->category){
+                        if ($positionCheck->distance == $competition->distance){
+                            if($positionCheck->points > $competition->points){
+                                $place++;
+                            }
                         }
                     }
                 }
-            }
-            if ($place <= 3){
-                $numberOfPodiums++;
+                if ($place <= 3){
+                    $numberOfPodiums++;
+                }
             }
         }
         
@@ -220,7 +222,7 @@ class ProfilesController extends Controller
             $avarageArrow += $arrow->points == 'X' ? 10 : ($arrow->points == 'M' ? 0 : $arrow->points);
         }
 
-        $avarageArrow = $avarageArrow / count($arrows);
+        $avarageArrow = count($arrows) != 0 ? $avarageArrow / count($arrows) : 0;
 
         $tens = Arrow::where('user_id',$profile->user_id)->where('points',10)->get();
         $nines = Arrow::where('user_id',$profile->user_id)->where('points',9)->get();

@@ -52,5 +52,12 @@ Muchas felicidades a todos y también a todos los demás arqueros del club que p
             'date' => '2022-12-19',
             'image' => '/assets/img/cpt-can-sala.jpg'
         ]);
+        News::create([
+            'title'=> 'Siete arqueros del SEO participan en la tercera tirada de la Liga Macaronesia' ,
+            'content' => 'Este domingo pasado, los arqueros del club hicieron una visita a la isla vecina para realizar la tercera tirada de la Liga Macaronesia. Agradecer al Club Tenerarco por la organización y esperamos que todos hayan disfrutado del viaje.
+La Liga vuelve el domingo 12 de febrero para su cuarta tirada y esperamos que también la puedan disfrutar todos.',
+            'date' => '2023-01-22',
+            'image' => '/assets/img/tnf.jpeg'
+        ]);
     }
 }

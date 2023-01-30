@@ -236,7 +236,7 @@ class ProfilesController extends Controller
                 'tens' => count($tens),
                 'nines' => count($nines),
                 'x' => count($x),
-                'avarage' => $avarageArrow,
+                'avarage' => round($avarageArrow,2),
                 'podiums' => $numberOfPodiums,
                 'message' => $message,
             ],

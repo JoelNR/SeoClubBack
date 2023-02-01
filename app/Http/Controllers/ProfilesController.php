@@ -6,6 +6,9 @@ use App\Models\Profile;
 use App\Models\Competition;
 use App\Models\User;
 use App\Models\Arrow;
+use App\Models\Round;
+use App\Models\Set;
+use App\Models\Score;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -63,9 +66,9 @@ class ProfilesController extends Controller
     public function show(User $user): JsonResponse
     {
 
-        $profile = Profile::select('user_id','first_name', 'last_name', 'category', 'image')        
-        ->where('user_id', $user->id)
-        ->first();
+        $profile = Profile::select('user_id', 'first_name', 'last_name', 'category', 'image')
+            ->where('user_id', $user->id)
+            ->first();
         $message = 'All right';
         $response = [
             'data' => [
@@ -80,12 +83,13 @@ class ProfilesController extends Controller
         return response()->json($response, 200);
     }
 
-    public function updatePhoto(Request $request, User $user): JsonResponse{
+    public function updatePhoto(Request $request, User $user): JsonResponse
+    {
         $data = request()->validate([
             'image' => 'image'
         ]);
 
-        
+
         $imagePath = $request->file('image')->hashName();
         Storage::disk('public')->put($imagePath, file_get_contents($request->file('image')));
         $profile = $user->profile;
@@ -113,9 +117,9 @@ class ProfilesController extends Controller
     {
 
         $data = request()->validate([
-            'first_name'=> 'required',
-            'last_name'=> 'required',
-            'category'=> '',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'category' => '',
         ]);
 
         $profile = $user->profile;
@@ -159,26 +163,27 @@ class ProfilesController extends Controller
     public function getProfileCompetition(Profile $profile)
     {
         $competitionArray = array();
-        $usersCompetition = DB::table('competition_user')->where('user_id',$profile->user_id)->paginate(6);
-        foreach($usersCompetition as $competition){
+        $usersCompetition = DB::table('competition_user')->where('user_id', $profile->user_id)->paginate(6);
+        foreach ($usersCompetition as $competition) {
             $place = 1;
-            $competitionPosition = DB::table('competition_user')->where('competition_id',$competition->competition_id)->get();
-            foreach ($competitionPosition as $positionCheck){
-                if($positionCheck->category == $competition->category){
-                    if ($positionCheck->distance == $competition->distance){
-                        if($positionCheck->points > $competition->points){
+            $competitionPosition = DB::table('competition_user')->where('competition_id', $competition->competition_id)->get();
+            foreach ($competitionPosition as $positionCheck) {
+                if ($positionCheck->category == $competition->category) {
+                    if ($positionCheck->distance == $competition->distance) {
+                        if ($positionCheck->points > $competition->points) {
                             $place++;
                         }
                     }
                 }
             }
 
-            array_push($competitionArray,[
+            array_push($competitionArray, [
                 'competition' => Competition::find($competition->competition_id),
                 'category' => $competition->category,
                 'distance' => $competition->distance,
                 'place' => $place,
-                'points' => $competition->points]);
+                'points' => $competition->points
+            ]);
         }
 
         $message = 'All right';
@@ -196,26 +201,27 @@ class ProfilesController extends Controller
     public function getAllProfileCompetition(Profile $profile)
     {
         $competitionArray = array();
-        $usersCompetition = DB::table('competition_user')->where('user_id',$profile->user_id)->get();
-        foreach($usersCompetition as $competition){
+        $usersCompetition = DB::table('competition_user')->where('user_id', $profile->user_id)->get();
+        foreach ($usersCompetition as $competition) {
             $place = 1;
-            $competitionPosition = DB::table('competition_user')->where('competition_id',$competition->competition_id)->get();
-            foreach ($competitionPosition as $positionCheck){
-                if($positionCheck->category == $competition->category){
-                    if ($positionCheck->distance == $competition->distance){
-                        if($positionCheck->points > $competition->points){
+            $competitionPosition = DB::table('competition_user')->where('competition_id', $competition->competition_id)->get();
+            foreach ($competitionPosition as $positionCheck) {
+                if ($positionCheck->category == $competition->category) {
+                    if ($positionCheck->distance == $competition->distance) {
+                        if ($positionCheck->points > $competition->points) {
                             $place++;
                         }
                     }
                 }
             }
 
-            array_push($competitionArray,[
+            array_push($competitionArray, [
                 'competition' => Competition::find($competition->competition_id),
                 'category' => $competition->category,
                 'distance' => $competition->distance,
                 'place' => $place,
-                'points' => $competition->points]);
+                'points' => $competition->points
+            ]);
         }
 
         $message = 'All right';
@@ -233,37 +239,70 @@ class ProfilesController extends Controller
     public function getProfileStats(Profile $profile)
     {
         $numberOfPodiums = 0;
-        $usersCompetition = DB::table('competition_user')->where('user_id',$profile->user_id)->get();
-        foreach($usersCompetition as $competition){
-            if ($competition->points != 0){
+        $usersCompetition = DB::table('competition_user')->where('user_id', $profile->user_id)->get();
+        foreach ($usersCompetition as $competition) {
+            if ($competition->points != 0) {
                 $place = 1;
-                $competitionPosition = DB::table('competition_user')->where('competition_id',$competition->competition_id)->get();
-                foreach ($competitionPosition as $positionCheck){
-                    if($positionCheck->category == $competition->category){
-                        if ($positionCheck->distance == $competition->distance){
-                            if($positionCheck->points > $competition->points){
+                $competitionPosition = DB::table('competition_user')->where('competition_id', $competition->competition_id)->get();
+                foreach ($competitionPosition as $positionCheck) {
+                    if ($positionCheck->category == $competition->category) {
+                        if ($positionCheck->distance == $competition->distance) {
+                            if ($positionCheck->points > $competition->points) {
                                 $place++;
                             }
                         }
                     }
                 }
-                if ($place <= 3){
+                if ($place <= 3) {
                     $numberOfPodiums++;
                 }
             }
         }
-        
-        $arrows = Arrow::where('user_id',$profile->user_id)->get();
+
+        $scores = Score::where('user_id', $profile->user_id)->whereNotNull('competition_id')->get();
+        $rounds = array();
+        foreach ($scores as $score) {
+            $scoreRounds = $score->rounds()->get();
+            foreach ($scoreRounds as $round) {
+                array_push($rounds,  $round);
+            }
+        }
+        $sets = array();
+        foreach ($rounds as $round) {
+            $roundSets = $round->sets()->get();
+            foreach ($roundSets as $set) {
+                array_push($sets,  $set);
+            }
+        }
+        $arrows = array();
+        $tens = array();
+        $nines = array();
+        $x = array();
+
+        foreach ($sets as $set) {
+            $setArrows =  $set->arrows()->get();
+            foreach ($setArrows as $arrow) {
+                array_push($arrows,  $arrow);
+            }
+            $setArrows = $set->arrows()->where('points', 10)->get();
+            foreach($setArrows as $arrow){
+                array_push($tens, $arrow);                
+            }
+            $setArrows = $set->arrows()->where('points', 9)->get();
+            foreach($setArrows as $arrow){
+                array_push($nines, $arrow);                
+            }
+            $setArrows = $set->arrows()->where('points', 'X')->get();
+            foreach($setArrows as $arrow){
+                array_push($x, $arrow);                
+            }
+        }
         $avarageArrow = 0;
-        foreach ($arrows as $arrow){
+        foreach ($arrows as $arrow) {
             $avarageArrow += $arrow->points == 'X' ? 10 : ($arrow->points == 'M' ? 0 : $arrow->points);
         }
 
         $avarageArrow = count($arrows) != 0 ? $avarageArrow / count($arrows) : 0;
-
-        $tens = Arrow::where('user_id',$profile->user_id)->where('points',10)->get();
-        $nines = Arrow::where('user_id',$profile->user_id)->where('points',9)->get();
-        $x = Arrow::where('user_id',$profile->user_id)->where('points','X')->get();
 
         $message = 'All right';
         $response = [
@@ -273,7 +312,7 @@ class ProfilesController extends Controller
                 'tens' => count($tens),
                 'nines' => count($nines),
                 'x' => count($x),
-                'avarage' => round($avarageArrow,2),
+                'avarage' => round($avarageArrow, 2),
                 'podiums' => $numberOfPodiums,
                 'message' => $message,
             ],

@@ -18,8 +18,8 @@ class SetController extends Controller
         $data = request()->validate([
             'user_id' => 'required',
         ]);
-        
-        $userSets = DB::table('sets')->where('user_id',$data['user_id'])->get();
+
+        $userSets = DB::table('sets')->where('user_id', $data['user_id'])->get();
         $message = 'All right';
 
         $response = [
@@ -63,9 +63,9 @@ class SetController extends Controller
         $set->points = $data['points'];
         $arrows = $set->arrows()->delete();
 
-        foreach($data['arrows'] as $arrow){
+        foreach ($data['arrows'] as $arrow) {
             $set->arrows()->create([
-                'points'=> $arrow,
+                'points' => $arrow,
                 'user_id' => $data['user_id'],
                 'set_id' => $set->id
             ]);
@@ -75,28 +75,51 @@ class SetController extends Controller
 
         $round->points += $data['points'];
         $round->update();
-        
+
 
         $score->points += $data['points'];
         $score->update();
 
         $competition = $score->competition()->first();
 
-        $relation = DB::table('competition_user')->where('competition_id',$competition->id)->where('user_id', $data['user_id'])->update(['points' => $score->points ]);
+        if ($competition != null) {
+            $user = $score->user()->first();
+            $relation = DB::table('competition_user')->where('competition_id', $competition->id)->where('user_id', $user->id)->first();
+            DB::table('competition_user')->where('competition_id', $competition->id)->where('user_id', $user->id)->update(['points' => $score->points]);
 
-        $message = 'All right';
-        $response = [
-            'data' => [
-                'success' => true,
-                'set' => $set,
-                'arrows' => $set->arrows()->get(),
-                'round' => $round,
-                'score' => $score,
-                'message' => $message,
-            ],
-        ];
+            $record = $user->records()->where('category', $relation->category)->where('distance', $relation->distance)->where('modality', $competition->modality)->first();
 
-        return response()->json($response, 200);
+            if ($record == null) {
+                Record::create([
+                    'points' => $score->points,
+                    'user_id' => $user->id,
+                    'competition_id' => $competition->id,
+                    'category' => $relation->category,
+                    'distance' => $relation->distance,
+                    'modality' => $competition->modality
+                ]);
+            } else {
+                if ($record->points < $score->points) {
+                    $record->points = $score->points;
+                    $record->update();
+                }
+            }
+            $message = 'All right';
+            $response = [
+                'data' => [
+                    'success' => true,
+                    'set' => $set,
+                    'user' => $user,
+                    'arrows' => $set->arrows()->get(),
+                    'round' => $round,
+                    'score' => $score,
+                    'record' => $record,
+                    'message' => $message,
+                ],
+            ];
+
+            return response()->json($response, 200);
+        }
     }
 
     public function store(User $user, Request $request)
@@ -108,13 +131,13 @@ class SetController extends Controller
         ]);
 
         $set = $user->sets()->create([
-            'points'=> $data['points'], 
-            'round_id' =>$data['round_id'],
+            'points' => $data['points'],
+            'round_id' => $data['round_id'],
         ]);
 
-        foreach($data['arrows'] as $arrow){
+        foreach ($data['arrows'] as $arrow) {
             $set->arrows()->create([
-                'points'=> $arrow,
+                'points' => $arrow,
                 'user_id' => $user->id,
                 'set_id' => $set->id
             ]);
@@ -123,49 +146,49 @@ class SetController extends Controller
         $round = $set->round()->first();
         $round->points = $round->points + $data['points'];
         $round->update();
-        
+
         $score = $round->score()->first();
         $score->points = $score->points + $data['points'];
         $score->update();
 
-        
+
 
         $competition = $score->competition()->first();
+        if ($competition != null) {
+            $relation = DB::table('competition_user')->where('competition_id', $competition->id)->where('user_id', $user->id)->first();
+            DB::table('competition_user')->where('competition_id', $competition->id)->where('user_id', $user->id)->update(['points' => $score->points]);
 
-        $relation = DB::table('competition_user')->where('competition_id',$competition->id)->where('user_id', $user->id)->first();
-        DB::table('competition_user')->where('competition_id',$competition->id)->where('user_id', $user->id)->update(['points' => $score->points ]);
+            $record = $user->records()->where('category', $relation->category)->where('distance', $relation->distance)->where('modality', $competition->modality)->first();
 
-        $record = $user->records()->where('category',$relation->category)->where('distance',$relation->distance)->where('modality',$competition->modality)->first();
-        
-        if($record == null){
-            Record::create([
-                'points'=> $score->points,
-                'user_id' => $user->id,
-                'competition_id' => $competition->id,
-                'category'=> $relation->category,
-                'distance' => $relation->distance,
-                'modality' => $competition->modality
-            ]);
-        } else {
-            if($record->points < $score->points){
-                $record->points = $score->points;
-                $record->update();
+            if ($record == null) {
+                Record::create([
+                    'points' => $score->points,
+                    'user_id' => $user->id,
+                    'competition_id' => $competition->id,
+                    'category' => $relation->category,
+                    'distance' => $relation->distance,
+                    'modality' => $competition->modality
+                ]);
+            } else {
+                if ($record->points < $score->points) {
+                    $record->points = $score->points;
+                    $record->update();
+                }
             }
+            $message = 'All right';
+            $response = [
+                'data' => [
+                    'success' => true,
+                    'set' => $set,
+                    'arrows' => $set->arrows()->get(),
+                    'round' => $round,
+                    'score' => $score,
+                    'record' => $record,
+                    'message' => $message,
+                ],
+            ];
+
+            return response()->json($response, 200);
         }
-
-        $message = 'All right';
-        $response = [
-            'data' => [
-                'success' => true,
-                'set' => $set,
-                'arrows' => $set->arrows()->get(),
-                'round' => $round,
-                'score' => $score,
-                'record'=>$record,
-                'message' => $message,
-            ],
-        ];
-
-        return response()->json($response, 200);
     }
 }

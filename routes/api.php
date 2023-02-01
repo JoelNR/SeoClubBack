@@ -17,6 +17,7 @@ use App\Http\Controllers\SetController;
 use App\Http\Controllers\RoundController;
 use App\Http\Controllers\ScoreController;
 use App\Http\Controllers\RecordController;
+use App\Http\Controllers\TrainingController;
 
 Route::group(['middleware' => ['api','cors']], function () {
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])
@@ -34,6 +35,8 @@ Route::group(['middleware' => ['api','cors']], function () {
                 ->name('profile.show');
     Route::get('/profile/competition/{profile}', [ProfilesController::class, 'getProfileCompetition'])
                 ->name('profile.getProfileCompetition');
+    Route::get('/profile/competition/all/{profile}', [ProfilesController::class, 'getAllProfileCompetition'])
+                ->name('profile.getAllProfileCompetition');
     Route::get('/profile/stats/{profile}', [ProfilesController::class, 'getProfileStats'])
                 ->name('profile.getProfileStats');
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
@@ -101,7 +104,16 @@ Route::group(['middleware' => ['api','cors']], function () {
                 ->middleware('auth.session'); 
     Route::put('/score/{score}', [ScoreController::class, 'update'])
                 ->name('score.update')
-                ->middleware('auth.session');                                     
+                ->middleware('auth.session');
+    Route::get('/training/{user}', [TrainingController::class, 'index'])
+                ->name('training.index')
+                ->middleware('auth.session');        
+    Route::post('/training/create/{user}', [TrainingController::class, 'store'])
+                ->name('training.store')
+                ->middleware('auth.session'); 
+    Route::delete('/training/destroy/{training}', [TrainingController::class, 'destroy'])
+                ->name('training.destroy')
+                ->middleware('auth.session');                                  
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {

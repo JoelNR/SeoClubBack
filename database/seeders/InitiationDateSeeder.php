@@ -16,27 +16,27 @@ class InitiationDateSeeder extends Seeder
     public function run()
     {
         InitiationDate::create([
-            'date' => '2023-01-02',
-            'capacity' => '3'
-        ]);
-        InitiationDate::create([
-            'date' => '2023-01-09',
-            'capacity' => '3'
-        ]);
-        InitiationDate::create([
-            'date' => '2023-01-16',
-            'capacity' => '3'
-        ]);
-        InitiationDate::create([
-            'date' => '2023-01-23',
-            'capacity' => '3'
-        ]);
-        InitiationDate::create([
             'date' => '2023-02-06',
             'capacity' => '3'
         ]);
         InitiationDate::create([
             'date' => '2023-02-13',
+            'capacity' => '3'
+        ]);
+        InitiationDate::create([
+            'date' => '2023-03-13',
+            'capacity' => '3'
+        ]);
+        InitiationDate::create([
+            'date' => '2023-03-20',
+            'capacity' => '3'
+        ]);
+        InitiationDate::create([
+            'date' => '2023-04-10',
+            'capacity' => '3'
+        ]);
+        InitiationDate::create([
+            'date' => '2023-04-17',
             'capacity' => '3'
         ]);
     }

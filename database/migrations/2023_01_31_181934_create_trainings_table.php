@@ -13,17 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('scores', function (Blueprint $table) {
+        Schema::create('trainings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('competition_id')->nullable();
-            $table->unsignedBigInteger('training_id')->nullable();
-            $table->integer('points');
             $table->timestamps();
+            $table->string('title');
+            $table->string('modality');
+            $table->string('category');
+            $table->date('date');
+            $table->integer('distance');
+            $table->integer('points')->nullable();
+            $table->unsignedBigInteger('user_id');
 
-
-            $table->index('training_id')->nullable();
-            $table->index('competition_id')->nullable();
             $table->index('user_id');
         });
     }
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('scores');
+        Schema::dropIfExists('trainings');
     }
 };

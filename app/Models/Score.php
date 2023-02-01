@@ -13,7 +13,8 @@ class Score extends Model
 
     protected $fillable = [
         'points',
-        'competition_id'
+        'competition_id',
+        'training_id'
     ];
 
     public function competition(){
@@ -26,5 +27,9 @@ class Score extends Model
 
     public function rounds(){
         return $this->hasMany(Round::class);
+    }
+
+    public function training(){
+        return $this->belongsTo(Training::class);
     }
 }

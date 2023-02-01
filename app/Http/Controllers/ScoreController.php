@@ -12,24 +12,44 @@ class ScoreController extends Controller
     public function store(User $user, Request $request)
     {
         $data = request()->validate([
-            'competition_id' => 'required',
+            'competition_id' => '',
+            'training_id' => ''
         ]);
+        $scoreData = null;
+        if($data['competition_id'] != null){
+            $scoreData = $user->scores()->where('competition_id',$data['competition_id'])->first();
 
-        $scoreData = $user->scores()->where('competition_id',$data['competition_id'])->first();
+            if($scoreData == null){
+                $scoreData = $user->scores()->create([
+                    'points'=> 0, 
+                    'competition_id' =>$data['competition_id']
+                ]);            
 
-        if($scoreData == null){
-            $scoreData = $user->scores()->create([
-                'points'=> 0, 
-                'competition_id' =>$data['competition_id']
-            ]);            
+                $user->rounds()->create([
+                    'points'=> 0, 
+                    'score_id' => $scoreData->id]);
+                $user->rounds()->create([
+                    'points'=> 0, 
+                    'score_id' => $scoreData->id]);
+            }            
+        } else {
+            $scoreData = $user->scores()->where('training_id',$data['training_id'])->first();
 
-            $user->rounds()->create([
-                'points'=> 0, 
-                'score_id' => $scoreData->id]);
-            $user->rounds()->create([
-                'points'=> 0, 
-                'score_id' => $scoreData->id]);
+            if($scoreData == null){
+                $scoreData = $user->scores()->create([
+                    'points'=> 0, 
+                    'training_id' =>$data['training_id']
+                ]);            
+
+                $user->rounds()->create([
+                    'points'=> 0, 
+                    'score_id' => $scoreData->id]);
+                $user->rounds()->create([
+                    'points'=> 0, 
+                    'score_id' => $scoreData->id]);
+            }   
         }
+
 
         $message = 'All right';
         $response = [

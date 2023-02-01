@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Set;
 use App\Models\Round;
 use App\Models\Record;
+use App\Models\Training;
 use App\Models\Competition;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -109,11 +110,29 @@ class SetController extends Controller
                 'data' => [
                     'success' => true,
                     'set' => $set,
-                    'user' => $user,
                     'arrows' => $set->arrows()->get(),
                     'round' => $round,
                     'score' => $score,
                     'record' => $record,
+                    'message' => $message,
+                ],
+            ];
+
+            return response()->json($response, 200);
+        } else {
+            $training = $score->training()->first();
+            $training->points = $score->points;
+            $training->update();
+
+            $message = 'All right';
+            $response = [
+                'data' => [
+                    'success' => true,
+                    'set' => $set,
+                    'arrows' => $set->arrows()->get(),
+                    'round' => $round,
+                    'score' => $score,
+                    'training' => $training,
                     'message' => $message,
                 ],
             ];
@@ -184,6 +203,25 @@ class SetController extends Controller
                     'round' => $round,
                     'score' => $score,
                     'record' => $record,
+                    'message' => $message,
+                ],
+            ];
+
+            return response()->json($response, 200);
+        } else {
+            $training = $score->training()->first();
+            $training->points = $score->points;
+            $training->update();
+
+            $message = 'All right';
+            $response = [
+                'data' => [
+                    'success' => true,
+                    'set' => $set,
+                    'arrows' => $set->arrows()->get(),
+                    'round' => $round,
+                    'score' => $score,
+                    'training' => $training,
                     'message' => $message,
                 ],
             ];

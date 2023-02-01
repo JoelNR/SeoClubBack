@@ -39,12 +39,26 @@ class TrainingController extends Controller
     }
 
     public function index(User $user){
-
+        
         $message = 'All right';
         $response = [
             'data' => [
                 'success' => true,
                 'training' => $user->trainings()->orderBy('date','desc')->get(),
+                'message' => $message,
+            ],
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    public function show(Training $training){
+
+        $message = 'All right';
+        $response = [
+            'data' => [
+                'success' => true,
+                'training' => $training,
                 'message' => $message,
             ],
         ];

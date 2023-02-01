@@ -32,4 +32,15 @@ class Score extends Model
     public function training(){
         return $this->belongsTo(Training::class);
     }
+
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($score) {
+            $rounds = $score->rounds()->get();
+            foreach($rounds as $round){
+                $round->delete();
+            }
+        });
+    }
 }

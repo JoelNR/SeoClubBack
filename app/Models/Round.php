@@ -27,4 +27,15 @@ class Round extends Model
     public function sets(){
         return $this->hasMany(Set::class);
     }    
+
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($round) {
+            $sets = $round->sets()->get();
+            foreach($sets as $set){
+                $set->delete();
+            }
+        });
+    }
 }

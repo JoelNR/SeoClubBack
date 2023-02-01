@@ -24,6 +24,14 @@ class Training extends Model
     }
 
     public function score(){
-        return $this->hasOne(User::class);
+        return $this->hasOne(Score::class);
+    }
+
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($training) {
+             $training->score()->first()->delete();
+        });
     }
 }

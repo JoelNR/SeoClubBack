@@ -108,6 +108,9 @@ Route::group(['middleware' => ['api','cors']], function () {
     Route::get('/training/{user}', [TrainingController::class, 'index'])
                 ->name('training.index')
                 ->middleware('auth.session');        
+    Route::get('/training/points/{training}', [TrainingController::class, 'show'])
+                ->name('training.show')
+                ->middleware('auth.session');   
     Route::post('/training/create/{user}', [TrainingController::class, 'store'])
                 ->name('training.store')
                 ->middleware('auth.session'); 

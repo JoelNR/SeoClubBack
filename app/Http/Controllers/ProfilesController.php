@@ -66,7 +66,7 @@ class ProfilesController extends Controller
     public function show(User $user): JsonResponse
     {
 
-        $profile = Profile::select('user_id', 'first_name', 'last_name', 'category', 'image')
+        $profile = Profile::select('user_id', 'first_name', 'last_name', 'category', 'image','is_member')
             ->where('user_id', $user->id)
             ->first();
         $message = 'All right';
